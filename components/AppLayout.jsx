@@ -1,13 +1,34 @@
+import { Popover } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { usePopper } from "react-popper";
+import { useEffect } from "react/cjs/react.development";
 import Button from "ui/Button";
 import HomeIcon from "ui/Icons/HomeIcon";
 import ProfileIcon from "ui/Icons/ProfileIcon";
 import SellerIcon from "ui/Icons/SellerIcon";
 
-export default function AppLayout({ user, children }) {
+export default function AppLayout({ user, refetchUser, children }) {
   const router = useRouter();
+  let [referenceElement, setReferenceElement] = useState(null);
+  let [popperElement, setPopperElement] = useState(null);
+  let { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: "top",
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [10, 20],
+        },
+      },
+    ],
+  });
+
+  useEffect(() => {
+    refetchUser();
+  }, []);
 
   return (
     <div className="flex min-h-screen text-slate-800">
@@ -75,27 +96,74 @@ export default function AppLayout({ user, children }) {
               Publicar
             </Button>
           </div>
-          <div className="flex items-center justify-center px-2 py-3 mx-8 mb-8 transition rounded-full cursor-pointer hover:bg-slate-200">
-            {user && (
-              <>
-                <Image
-                  className="rounded-full"
-                  src={user.profileImage}
-                  alt={`Foto de perfil de ${user.name}`}
-                  width={50}
-                  height={50}
-                />
-                <div className="flex flex-col ml-2">
-                  <span className="ml-2 text-lg font-semibold">
-                    {user.name}
-                  </span>
-                  <span className="ml-2 text-sm text-gray-600">
-                    {user.email}
-                  </span>
+          <div>
+            <Popover className="relative transition">
+              <Popover.Button ref={setReferenceElement}>
+                <div className="flex items-center px-8 py-3 mx-4 mb-8 transition rounded-full cursor-pointer hover:bg-slate-200">
+                  {user && (
+                    <>
+                      <Image
+                        className="rounded-full"
+                        src={user.profileImage}
+                        alt={`Foto de perfil de ${user.name}`}
+                        width={50}
+                        height={50}
+                      />
+                      <div className="flex-col ml-2">
+                        <span className="flex ml-2 text-lg font-semibold">
+                          {user.name}
+                        </span>
+                        <span className="ml-2 text-sm text-gray-600">
+                          {user.email}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </>
-            )}
-            <div></div>
+              </Popover.Button>
+              <Popover.Panel
+                ref={setPopperElement}
+                style={styles.popper}
+                {...attributes.popper}
+              >
+                <div className="flex flex-col justify-center w-full h-full px-8 py-6 bg-white rounded-lg shadow-lg">
+                  {user && (
+                    <div className="flex">
+                      <div>
+                        <Image
+                          className="rounded-full"
+                          src={user.profileImage}
+                          alt={`Foto de perfil de ${user.name}`}
+                          width={50}
+                          height={50}
+                        />
+                      </div>
+                      <div className="flex flex-col ml-2">
+                        <span className="ml-2 text-lg font-semibold">
+                          {user.name}
+                        </span>
+                        <span className="ml-2 text-sm text-gray-600">
+                          {user.email}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      window.localStorage.removeItem("token");
+                      window.localStorage.removeItem("user");
+                      refetchUser();
+                      router.push("/login");
+                    }}
+                    className="flex items-center px-4 py-2 mt-4 transition rounded-full cursor-pointer hover:bg-slate-200"
+                  >
+                    <span className="text-lg font-medium">{`Cerrar la sesión de @${
+                      user?.email.split("@")[0]
+                    }`}</span>
+                  </button>
+                </div>
+              </Popover.Panel>
+            </Popover>
           </div>
         </div>
       </aside>

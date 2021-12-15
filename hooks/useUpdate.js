@@ -1,6 +1,7 @@
 export default function useUpdate(field) {
-  const updateUser = async (a) => {
+  const updateUser = async (data) => {
     const token = window.localStorage.getItem("token");
+    console.log(token, "token");
 
     if (!token) {
       return;
@@ -10,15 +11,15 @@ export default function useUpdate(field) {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/${field}`,
         {
-          method: "DELETE",
+          method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body: data,
         }
       );
-      const data = await response.json();
-      setData(data);
+      const parseResponse = await response.json();
+      console.log(parseResponse);
     } catch (error) {
       console.error(error);
     }

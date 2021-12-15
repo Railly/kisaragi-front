@@ -1,5 +1,5 @@
 export default function useDelete(field) {
-  const deleteUser = async (a) => {
+  const deleteUser = async () => {
     const token = window.localStorage.getItem("token");
 
     if (!token) {
@@ -18,7 +18,6 @@ export default function useDelete(field) {
         }
       );
       const data = await response.json();
-      setData(data);
     } catch (error) {
       console.error(error);
     }

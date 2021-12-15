@@ -66,7 +66,13 @@ export default function Profile() {
               </div>
             </div>
             {isCurrentUserProfile ? (
-              <Button variant="tertiary" className="w-4/5 mt-4">
+              <Button
+                onClick={() => {
+                  router.push("/profile/edit");
+                }}
+                variant="tertiary"
+                className="w-4/5 mt-4"
+              >
                 Editar perfil
               </Button>
             ) : (

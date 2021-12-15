@@ -13,7 +13,6 @@ const schema = yup.object().shape({
 
 export default function Home() {
   const router = useRouter();
-  const user = useUser();
 
   const {
     register,

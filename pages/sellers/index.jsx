@@ -37,14 +37,19 @@ export default function Profile() {
                 </div>
               </div>
               <div>
-                <Button className="h-max">
+                <Button
+                  onClick={() => {
+                    router.push(`/profile/${seller.userId}`);
+                  }}
+                  className="h-max"
+                >
                   {seller.userId !==
-                  JSON.parse(window.localStorage.getItem("user")).userId
+                  JSON.parse(window.localStorage.getItem("user"))?.userId
                     ? "Ver perfil"
                     : "Mi perfil"}
                 </Button>
                 {seller.userId !==
-                  JSON.parse(window.localStorage.getItem("user")).userId && (
+                  JSON.parse(window.localStorage.getItem("user"))?.userId && (
                   <Button variant="tertiary" className="ml-6 h-max">
                     Seguir
                   </Button>
