@@ -2,28 +2,18 @@ import { useForm } from "react-hook-form";
 import TextInput from "ui/TextInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import FileInput from "ui/FileInput";
 import Button from "ui/Button";
 import { useRouter } from "next/router";
 import Link from "ui/Link";
 
 const schema = yup.object().shape({
-  name: yup.string().required("Nombre es requerido"),
   email: yup.string().email("Email inválido").required("Email es requerido"),
   password: yup.string().required("Contraseña es requerida"),
-  file: yup
-    .mixed()
-    .test(
-      "file",
-      "Archivo inválido",
-      (value) =>
-        value?.[0] &&
-        (value?.[0].type === "image/png" || value.type === "image/jpeg")
-    ),
 });
 
 export default function Home() {
   const router = useRouter();
+  const user = useUser();
 
   const {
     register,
@@ -36,13 +26,11 @@ export default function Home() {
   const onSubmit = async (data) => {
     const formData = new FormData();
     console.log(data);
-    formData.append("name", data.name);
     formData.append("email", data.email);
     formData.append("password", data.password);
-    formData.append("file", data.file[0]);
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/users`,
+      `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/users/login`,
       {
         method: "POST",
         body: formData,
@@ -67,16 +55,9 @@ export default function Home() {
           Bienvenido a Kisaragi
         </h1>
         <h2 className="pt-4 text-lg font-medium text-center text-slate-700">
-          Regístrate para empezar
+          Inicia sesión
         </h2>
         <div className="grid pt-4 gap-y-4">
-          <TextInput
-            label="Nombre"
-            name="name"
-            disabled={false}
-            register={register}
-            errors={errors.name}
-          />
           <TextInput
             label="Correo electrónico"
             name="email"
@@ -92,17 +73,12 @@ export default function Home() {
             register={register}
             errors={errors.password}
           />
-          <FileInput
-            label="Foto de perfil"
-            name="file"
-            disabled={false}
-            errors={errors.file}
-            {...register("file")}
-          />
-          <Button type="submit">Registrarme</Button>
+          <Button type="submit" className="mt-4">
+            Iniciar sesión
+          </Button>
         </div>
         <div className="pt-4 text-center">
-          <Link to="/login">Ya tengo una cuenta 😊</Link>
+          <Link to="/">Aún no tengo una cuenta 😢</Link>
         </div>
       </form>
     </main>

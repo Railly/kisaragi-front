@@ -1,13 +1,13 @@
 const styles = {
   base: "transition rounded-lg",
   secondary:
-    "bg-sky-500 text-white shadow-lg hover:shadow-sky-800/50 shadow-sky-500/40  hover:bg-sky-700",
+    "bg-blue-500 text-white shadow-lg hover:shadow-blue-800/50 shadow-blue-500/40  hover:bg-blue-700",
   outline_primary:
     "border-2 border-sky-500 text-sky-500 shadow-lg hover:shadow-sky-700/20 hover:bg-sky-100 shadow-sky-500/20",
   primary:
     "bg-emerald-500 text-white shadow-lg hover:shadow-emerald-800/50 shadow-emerald-500/40 hover:bg-emerald-700",
   tertiary:
-    "bg-pink-500 text-white shadow-lg hover:shadow-pink-800/50 shadow-pink-500/40 hover:bg-pink-700",
+    "bg-slate-600 text-white shadow-lg hover:shadow-slate-800/50 shadow-slate-600/40 hover:bg-slate-700",
   danger:
     "bg-rose-500 text-white shadow-lg hover:shadow-rose-800/50 shadow-rose-500/40 hover:bg-rose-700",
 };
