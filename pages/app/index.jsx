@@ -143,10 +143,6 @@ export default function App() {
                     <span className="text-sm text-gray-600 max-w-prose">
                       {publication.content}
                     </span>
-                    <div className="flex items-center mt-2">
-                      <CommentaryIcon className="w-5 h-5 mr-2 fill-slate-600" />
-                      <span>{publication.commentaries?.length}</span>
-                    </div>
                     <div className="relative w-2/4 my-4 overflow-hidden bg-gray-800 rounded-lg aspect-video">
                       <Image
                         src={publication.img_url}
@@ -154,6 +150,10 @@ export default function App() {
                         layout="fill"
                         objectFit="cover"
                       />
+                    </div>
+                    <div className="flex items-center mt-2">
+                      <CommentaryIcon className="w-5 h-5 mr-2 fill-slate-600" />
+                      <span>{publication.commentaries?.length}</span>
                     </div>
                   </div>
                 </a>

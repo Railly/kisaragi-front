@@ -6,11 +6,10 @@ import "tailwindcss/tailwind.css";
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const { user, refetchUser } = useUser();
+
   return (
     <>
-      {router.pathname.split("/").includes("app") ||
-      router.pathname.split("/").includes("profile") ||
-      router.pathname.split("/").includes("sellers") ? (
+      {router.pathname !== "/login" && router.pathname !== "/" ? (
         <AppLayout user={user} refetchUser={refetchUser}>
           <Component user={user} {...pageProps} />
         </AppLayout>
