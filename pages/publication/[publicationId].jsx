@@ -184,7 +184,7 @@ export default function PublicationDetails({ user }) {
                   {
                     // If user is the author of the publication, show the delete button
                     author?.user?.userId ===
-                      JSON.parse(window.localStorage.getItem("user")).id && (
+                      JSON.parse(window.localStorage.getItem("user"))?.id && (
                       <div className="flex justify-end">
                         <Button
                           onClick={() => {

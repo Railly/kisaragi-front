@@ -63,6 +63,14 @@ export default function Profile() {
                           (1000 * 60 * 60)
                       )} horas`}
                 </p>
+                <div className="mt-4">
+                  <p className="text-sm">
+                    {currentUser?.data?.user?.followers.length} seguidores
+                  </p>
+                  <p className="text-sm">
+                    {currentUser?.data?.user?.following.length} seguidos
+                  </p>
+                </div>
               </div>
             </div>
             {isCurrentUserProfile ? (

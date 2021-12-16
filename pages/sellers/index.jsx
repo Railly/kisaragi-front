@@ -9,6 +9,38 @@ export default function Profile() {
   const sellers = useGetAll("users");
   console.log(sellers?.data?.users, "gaaaaa");
 
+  const handleFollow = async (followId) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/follow?followId=${followId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+      }
+    );
+    const data = await res.json();
+    console.log(data, "data");
+    sellers.refetch();
+  };
+
+  const handleUnfollow = async (unfollowId) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/unfollow?unfollowId=${unfollowId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+      }
+    );
+    const data = await res.json();
+    console.log(data, "data");
+    sellers.refetch();
+  };
+
   return (
     <div className="w-full ">
       <h1 className="pt-4 pl-4 text-2xl font-bold">Vendedores</h1>
@@ -41,6 +73,12 @@ export default function Profile() {
                   onClick={() => {
                     router.push(`/profile/${seller.userId}`);
                   }}
+                  variant={
+                    seller.userId !==
+                    JSON.parse(window.localStorage.getItem("user"))?.userId
+                      ? "primary"
+                      : "outline_primary"
+                  }
                   className="h-max"
                 >
                   {seller.userId !==
@@ -49,11 +87,26 @@ export default function Profile() {
                     : "Mi perfil"}
                 </Button>
                 {seller.userId !==
-                  JSON.parse(window.localStorage.getItem("user"))?.userId && (
-                  <Button variant="tertiary" className="ml-6 h-max">
-                    Seguir
-                  </Button>
-                )}
+                  JSON.parse(window.localStorage.getItem("user"))?.userId &&
+                  (seller.followers.includes(
+                    JSON.parse(window.localStorage.getItem("user"))?.userId
+                  ) ? (
+                    <Button
+                      onClick={() => handleUnfollow(seller.userId)}
+                      variant="tertiary"
+                      className="ml-6 h-max"
+                    >
+                      Siguiendo
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => handleFollow(seller.userId)}
+                      variant="secondary"
+                      className="ml-6 h-max"
+                    >
+                      Seguir
+                    </Button>
+                  ))}
               </div>
             </div>
           ))
