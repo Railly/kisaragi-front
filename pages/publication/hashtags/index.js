@@ -4,64 +4,69 @@ import NextLink from "next/link";
 import Link from "ui/Link";
 import { useState } from "react";
 import CommentaryIcon from "ui/Icons/CommentaryIcon";
+import { useRouter } from "next/router";
 
 export default function App() {
+  const router = useRouter();
+  const { hashtag } = router.query;
   const [publications, setPublications] = useState(null);
   const [authors, setAuthors] = useState(null);
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    const fetchPublications = async () => {
-      try {
-        const responsePublications = await fetch(
-          `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}/publications`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await responsePublications.json();
-        setPublications(data);
-        const authorsIdArray = data
-          .map((publication) => publication.author_id)
-          .reduce((acc, authorId) => {
-            if (!acc.includes(authorId)) {
-              acc.push(authorId);
+    if (hashtag) {
+      const fetchPublications = async () => {
+        try {
+          const responsePublications = await fetch(
+            `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}/publications/hashtags?hashtag=${hashtag}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
-            return acc;
-          }, []);
-
-        const arrayPromises = authorsIdArray.map(async (authorId) => {
-          try {
-            const response = await fetch(
-              `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/${authorId}`,
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                },
+          );
+          const data = await responsePublications.json();
+          setPublications(data);
+          const authorsIdArray = data
+            .map((publication) => publication.author_id)
+            .reduce((acc, authorId) => {
+              if (!acc.includes(authorId)) {
+                acc.push(authorId);
               }
-            );
-            const data = await response.json();
-            return data;
-          } catch (error) {
-            console.error(error);
-          }
-        });
-        const responseAuthors = await Promise.all(arrayPromises);
-        setAuthors(responseAuthors);
-        console.log(data, "publi");
-        console.log(responseAuthors, "author");
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const token = window.localStorage.getItem("token");
+              return acc;
+            }, []);
 
-    if (token) {
-      fetchPublications();
+          const arrayPromises = authorsIdArray.map(async (authorId) => {
+            try {
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/${authorId}`,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              const data = await response.json();
+              return data;
+            } catch (error) {
+              console.error(error);
+            }
+          });
+          const responseAuthors = await Promise.all(arrayPromises);
+          setAuthors(responseAuthors);
+          console.log(data, "publi");
+          console.log(responseAuthors, "author");
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      const token = window.localStorage.getItem("token");
+
+      if (token) {
+        fetchPublications();
+      }
     }
   }, [reload]);
 
@@ -87,27 +92,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <h1 className="pt-4 pl-4 text-2xl font-bold">Inicio</h1>
-      {/* 
-        publications: array of objects
-        object schema:
-        {
-    "publication_id": "61b9a29a59de34b2bc92f7d5",
-    "title": "Kumiko Oumae",
-    "content": "Protagonista de Hibike Euphonium, anime ambientado en la banda escolar de la preparatoria Kitauji",
-    "author_id": "61b91ac87fa6c2abb77c5db4",
-    "img_url": "http://res.cloudinary.com/ab-software/image/upload/v1639555737/jh30bjvzj8pof8vp9dv3.jpg",
-    "commentaries": [
-        {
-            "commentary_id": "61b9a2ba3373b73a2286a4d8",
-            "author_id": "61b91ac87fa6c2abb77c5db4",
-            "commentary": "Un gran anime, valga decir",
-            "created_at": "2021-12-15"
-        }
-    ],
-    "created_at": "2021-12-15"
-}
-      */}
+      <h1 className="pt-4 pl-4 text-2xl font-bold">Publicaciones #{hashtag}</h1>
       {publications &&
       authors &&
       publications?.length > 0 &&

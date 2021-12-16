@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Button from "ui/Button";
 import useDelete from "hooks/useDelete";
+import Link from "ui/Link";
 
 const schema = yup.object().shape({
   commentary: yup.string().required("Comment is required"),
@@ -182,7 +183,7 @@ export default function PublicationDetails({ user }) {
                   </span>
                   {
                     // If user is the author of the publication, show the delete button
-                    author?.user?.id ===
+                    author?.user?.userId ===
                       JSON.parse(window.localStorage.getItem("user")).id && (
                       <div className="flex justify-end">
                         <Button
@@ -199,9 +200,22 @@ export default function PublicationDetails({ user }) {
                   }
                 </div>
                 <span className="text-sm text-gray-600 max-w-prose">
-                  {publication.content}
+                  {publication.content.split(" ").map((item, index) => {
+                    if (item.startsWith("#")) {
+                      return (
+                        <Link
+                          key={index}
+                          to={`/publication/hashtags?hashtag=${item.slice(1)}`}
+                        >
+                          {" "}
+                          <a className="text-blue-600">{item}</a>
+                        </Link>
+                      );
+                    } else {
+                      return " " + item;
+                    }
+                  })}
                 </span>
-
                 <div className="relative w-2/4 my-4 overflow-hidden bg-gray-800 rounded-lg aspect-video">
                   <Image
                     src={publication.img_url}
