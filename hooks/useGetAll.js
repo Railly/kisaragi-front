@@ -7,15 +7,16 @@ export default function useGetAll(field) {
   useEffect(() => {
     const getField = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/${field}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const enviromentVariables = {
+          users: `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}`,
+          publications: `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}`,
+        };
+        const response = await fetch(`${enviromentVariables[field]}/${field}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         setData(data);
         console.log(data);

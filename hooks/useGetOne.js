@@ -9,7 +9,7 @@ export default function useGetOne(field, id) {
       try {
         if (id) {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/${field}/${id}`,
+            `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/${field}/${id}`,
             {
               method: "GET",
               headers: {

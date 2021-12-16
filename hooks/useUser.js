@@ -6,7 +6,6 @@ export default function useUser() {
 
   useEffect(() => {
     const parsedUser = JSON.parse(window.localStorage.getItem("user"));
-    console.log(parsedUser);
     setUser(parsedUser);
   }, [reload]);
 

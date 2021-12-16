@@ -96,7 +96,16 @@ export default function EditProfile() {
                       )} horas`}
                 </p>
               </div>
-              <Button onClick={handleDelete} className="ml-6" variant="danger">
+              <Button
+                onClick={() => {
+                  handleDelete();
+                  window.localStorage.removeItem("user");
+                  window.localStorage.removeItem("token");
+                  router.push("/login");
+                }}
+                className="ml-6"
+                variant="danger"
+              >
                 Eliminar cuenta
               </Button>
             </div>

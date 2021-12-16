@@ -10,8 +10,8 @@ export default function Profile() {
   console.log(sellers?.data?.users, "gaaaaa");
 
   return (
-    <div className="self-start w-full ">
-      <h1 className="p-4 mb-4 text-2xl font-bold">Vendedores</h1>
+    <div className="w-full ">
+      <h1 className="pt-4 pl-4 text-2xl font-bold">Vendedores</h1>
       <div className="flex flex-col items-center justify-center w-full py-6 my-4">
         {!sellers ? (
           <SpinnerIcon className="w-10 h-10 mr-3 -ml-1 text-blue-500 animate-spin" />
@@ -19,7 +19,7 @@ export default function Profile() {
           sellers?.data?.users.map((seller) => (
             <div
               key={seller.userId}
-              className="flex items-center justify-between w-full p-5 px-24 mr-5 transition hover:bg-slate-200"
+              className="flex items-center justify-between w-full p-4 transition bg-white hover:bg-slate-100"
             >
               <div className="flex group">
                 <div>

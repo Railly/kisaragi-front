@@ -1,8 +1,8 @@
-export default function SellerIcon(props) {
+export default function SellerIcon({ filled, ...props }) {
   return (
     <>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-        {props.filled ? (
+        {filled ? (
           <>
             <g>
               <path d="M0,0h24v24H0V0z" fill="none" />

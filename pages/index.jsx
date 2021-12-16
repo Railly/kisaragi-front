@@ -42,7 +42,7 @@ export default function Home() {
     formData.append("file", data.file[0]);
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/users`,
+      `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users`,
       {
         method: "POST",
         body: formData,
@@ -61,7 +61,7 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center w-screen min-h-screen bg-blue-500">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-xl px-8 py-6 bg-white "
+        className="max-w-xl px-8 py-6 bg-white rounded-lg shadow-lg"
       >
         <h1 className="text-3xl font-bold text-center text-slate-700">
           Bienvenido a Kisaragi

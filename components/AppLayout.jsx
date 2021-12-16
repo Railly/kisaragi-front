@@ -9,6 +9,7 @@ import Button from "ui/Button";
 import HomeIcon from "ui/Icons/HomeIcon";
 import ProfileIcon from "ui/Icons/ProfileIcon";
 import SellerIcon from "ui/Icons/SellerIcon";
+import PublishModal from "./PublishModal";
 
 export default function AppLayout({ user, refetchUser, children }) {
   const router = useRouter();
@@ -31,9 +32,9 @@ export default function AppLayout({ user, refetchUser, children }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen text-slate-800">
-      <aside className="flex flex-col items-center w-1/5 py-4 border-r shadow-inner bg-blue-50">
-        <div className="flex flex-col justify-between w-full h-full">
+    <div className="flex text-slate-800">
+      <aside className="fixed flex flex-col items-center w-1/5 h-screen py-4 bg-white border-r shadow-inner">
+        <div className="z-20 flex flex-col justify-between w-full h-full">
           <div className="grid w-full px-8 gap-y-6">
             <Link href="/app">
               <a className="flex items-center px-4 py-2 transition rounded-full cursor-pointer w-max hover:bg-blue-200">
@@ -92,9 +93,7 @@ export default function AppLayout({ user, refetchUser, children }) {
                 </span>
               </a>
             </Link>
-            <Button variant="secondary" className="rounded-full">
-              Publicar
-            </Button>
+            <PublishModal />
           </div>
           <div>
             <Popover className="relative transition">
@@ -167,7 +166,8 @@ export default function AppLayout({ user, refetchUser, children }) {
           </div>
         </div>
       </aside>
-      <main className="flex flex-col items-center flex-1 w-screen bg-blue-50">
+      <div className="w-1/5"></div>
+      <main className="flex flex-col items-center flex-1 w-screen h-screen bg-white">
         {children}
       </main>
     </div>

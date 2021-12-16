@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Button from "ui/Button";
 
 const FileInput = React.forwardRef(
   ({ label, onChange, onBlur, name, errors, disabled }, ref) => {

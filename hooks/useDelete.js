@@ -1,6 +1,6 @@
 export default function useDelete(field) {
   const deleteUser = async () => {
-    const token = window.localStorage.getItem("token");
+    const token = JSON.parse(window.localStorage.getItem("token"));
 
     if (!token) {
       return;
@@ -8,7 +8,7 @@ export default function useDelete(field) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_KISARAGI_API_URL}/${field}`,
+        `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/${field}`,
         {
           method: "DELETE",
           headers: {

@@ -15,7 +15,7 @@ export default function Profile() {
     const parsedUser = JSON.parse(window.localStorage.getItem("user"));
     if (currentUser && userId) {
       setIsCurrentUserProfile(
-        currentUser?.data?.user?.userId === parsedUser.userId
+        currentUser?.data?.user?.userId === parsedUser?.userId
       );
     }
   }, [currentUser, userId]);
