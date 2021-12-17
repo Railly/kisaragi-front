@@ -5,17 +5,20 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { usePopper } from "react-popper";
 import { useEffect } from "react/cjs/react.development";
-import Button from "ui/Button";
 import HomeIcon from "ui/Icons/HomeIcon";
 import ProfileIcon from "ui/Icons/ProfileIcon";
 import SellerIcon from "ui/Icons/SellerIcon";
 import PublishModal from "./PublishModal";
 
-export default function AppLayout({ user, refetchUser, children }) {
+export default function AppLayout({
+  user = {},
+  refetchUser = () => {},
+  children,
+}) {
   const router = useRouter();
-  let [referenceElement, setReferenceElement] = useState(null);
-  let [popperElement, setPopperElement] = useState(null);
-  let { styles, attributes } = usePopper(referenceElement, popperElement, {
+  const [referenceElement, setReferenceElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: "top",
     modifiers: [
       {
@@ -27,9 +30,9 @@ export default function AppLayout({ user, refetchUser, children }) {
     ],
   });
 
-  useEffect(() => {
-    refetchUser();
-  }, []);
+  // useEffect(() => {
+  //   refetchUser();
+  // }, []);
 
   return (
     <div className="flex text-slate-800">

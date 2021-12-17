@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
 import NextLink from "next/link";
 import Link from "ui/Link";
 import { useState } from "react";
 import CommentaryIcon from "ui/Icons/CommentaryIcon";
 import { useRouter } from "next/router";
 
-export default function App() {
+export default function Hashtags() {
   const router = useRouter();
   const { hashtag } = router.query;
   const [publications, setPublications] = useState(null);

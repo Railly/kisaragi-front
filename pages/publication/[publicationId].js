@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
 import { useState } from "react";
 import CommentaryIcon from "ui/Icons/CommentaryIcon";
 import { useRouter } from "next/router";
@@ -15,8 +15,9 @@ const schema = yup.object().shape({
   commentary: yup.string().required("Comment is required"),
 });
 
-export default function PublicationDetails({ user }) {
+export default function PublicationDetails() {
   const router = useRouter();
+  const [user, setUser] = useState(null);
   const {
     register,
     handleSubmit,
@@ -25,7 +26,6 @@ export default function PublicationDetails({ user }) {
     resolver: yupResolver(schema),
   });
   const { publicationId } = router.query;
-  console.log(user, "GAA");
   const [publication, setPublications] = useState(null);
   const [author, setAuthor] = useState(null);
   const [commentariesAuthors, setCommentariesAuthors] = useState(null);
@@ -34,6 +34,7 @@ export default function PublicationDetails({ user }) {
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
     if (publicationId) {
       const fetchPublications = async () => {
         try {
@@ -184,12 +185,14 @@ export default function PublicationDetails({ user }) {
                   {
                     // If user is the author of the publication, show the delete button
                     author?.user?.userId ===
-                      JSON.parse(window.localStorage.getItem("user"))?.id && (
+                      JSON.parse(window.localStorage.getItem("user"))
+                        ?.userId && (
                       <div className="flex justify-end">
                         <Button
                           onClick={() => {
                             handleDeletePublication(publication.publication_id);
                             router.push("/app");
+                            setReload(!reload);
                           }}
                           variant="danger"
                         >

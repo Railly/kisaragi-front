@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
 import NextLink from "next/link";
 import Link from "ui/Link";
 import { useState } from "react";
 import CommentaryIcon from "ui/Icons/CommentaryIcon";
 
-export default function App() {
+export default function MainApp() {
   const [publications, setPublications] = useState(null);
   const [authors, setAuthors] = useState(null);
   const [reload, setReload] = useState(false);

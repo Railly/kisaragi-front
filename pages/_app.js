@@ -3,7 +3,7 @@ import useUser from "hooks/useUser";
 import { useRouter } from "next/router";
 import "tailwindcss/tailwind.css";
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const { user, refetchUser } = useUser();
 
@@ -19,5 +19,3 @@ function MyApp({ Component, pageProps }) {
     </>
   );
 }
-
-export default MyApp;
