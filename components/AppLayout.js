@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { usePopper } from "react-popper";
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
 import HomeIcon from "ui/Icons/HomeIcon";
 import ProfileIcon from "ui/Icons/ProfileIcon";
 import SellerIcon from "ui/Icons/SellerIcon";
@@ -30,9 +30,9 @@ export default function AppLayout({
     ],
   });
 
-  // useEffect(() => {
-  //   refetchUser();
-  // }, []);
+  useEffect(() => {
+    refetchUser();
+  }, []);
 
   return (
     <div className="flex text-slate-800">
