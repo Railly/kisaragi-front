@@ -1,4 +1,5 @@
 import AppLayout from "components/AppLayout";
+import ReloadProvider from "context/reloadContext";
 import useUser from "hooks/useUser";
 import { useRouter } from "next/router";
 import "tailwindcss/tailwind.css";
@@ -10,9 +11,11 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <>
       {router.pathname !== "/login" && router.pathname !== "/" ? (
-        <AppLayout user={user} refetchUser={refetchUser}>
-          <Component user={user} {...pageProps} />
-        </AppLayout>
+        <ReloadProvider>
+          <AppLayout user={user} refetchUser={refetchUser}>
+            <Component user={user} {...pageProps} />
+          </AppLayout>
+        </ReloadProvider>
       ) : (
         <Component {...pageProps} />
       )}

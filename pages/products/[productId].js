@@ -27,21 +27,21 @@ export default function PublicationDetails() {
     resolver: yupResolver(schema),
   });
   const { reloadPage } = useReload();
-  const { publicationId } = router.query;
+  const { productId } = router.query;
   const [publication, setPublications] = useState(null);
   const [author, setAuthor] = useState(null);
   const [commentariesAuthors, setCommentariesAuthors] = useState(null);
-  const handleDeleteCommentary = useDelete("commentariesPub");
+  const handleDeleteCommentary = useDelete("commentariesProd");
   const handleDeletePublication = useDelete("publications");
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
-    if (publicationId) {
+    if (productId) {
       const fetchPublications = async () => {
         try {
           const responsePublications = await fetch(
-            `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}/publications/${publicationId}/id`,
+            `${process.env.NEXT_PUBLIC_KISARAGI_PRODUCTS_API}/products/${productId}`,
             {
               method: "GET",
               headers: {
@@ -50,11 +50,11 @@ export default function PublicationDetails() {
             }
           );
           const publicationParsed = await responsePublications.json();
-          setPublications(publicationParsed);
           console.log(publicationParsed, "one publication");
-          const { author_id } = publicationParsed;
+          const { user } = publicationParsed;
+          setPublications(user);
           const responseAuthor = await fetch(
-            `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/${author_id}`,
+            `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/${user.ownerId}`,
             {
               method: "GET",
               headers: {
@@ -66,11 +66,11 @@ export default function PublicationDetails() {
           console.log(authorParsed, "author");
           setAuthor(authorParsed);
 
-          const arrayPromises = publicationParsed.commentaries.map(
+          const arrayPromises = publicationParsed.user.commentary.map(
             async (commentary) => {
               try {
                 const response = await fetch(
-                  `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/${commentary.author_id}`,
+                  `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/${commentary.authorId}`,
                   {
                     method: "GET",
                     headers: {
@@ -98,7 +98,7 @@ export default function PublicationDetails() {
         fetchPublications();
       }
     }
-  }, [reload, publicationId]);
+  }, [reload, productId]);
 
   const getTimeAge = (date) => {
     const now = new Date();
@@ -124,10 +124,10 @@ export default function PublicationDetails() {
     console.log(data);
     const formData = new FormData();
     formData.append("commentary", data.commentary);
-    formData.append("publication_id", publicationId);
+    formData.append("product_id", productId);
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}/commentaries`,
+      `${process.env.NEXT_PUBLIC_KISARAGI_PRODUCTS_API}/commentaries`,
       {
         method: "POST",
         headers: {
@@ -169,95 +169,119 @@ export default function PublicationDetails() {
       {publication && author && commentariesAuthors ? (
         <div className="flex flex-col w-full py-6 my-4 bg-white">
           <div className="flex flex-col px-6 py-4">
-            <div className="flex w-full">
-              <div className="w-12">
-                <Image
-                  className="rounded-full"
-                  src={author?.user?.profileImage}
-                  alt={`Foto de perfil de ${author?.user?.name}`}
-                  width={48}
-                  height={48}
-                />
-              </div>
-              <div className="flex flex-col flex-1 ml-3">
-                <div>
-                  <div className="flex items-center justify-between w-4/6">
-                    <div className="flex items-center mt-2">
-                      <span className="font-bold">{author?.user?.name}</span>
-                      <span className="ml-1 font-medium text-gray-600 ">
-                        @{author?.user?.email.split("@")[0]}
-                      </span>
-                      <span className="ml-2 text-sm text-gray-600">
-                        {getTimeAge(publication.created_at)}
-                      </span>
-                    </div>
-
-                    {
-                      // If user is the author of the publication, show the delete button
-                      author?.user?.userId ===
-                        JSON.parse(window.localStorage.getItem("user"))
-                          ?.userId && (
-                        <div className="flex justify-end">
-                          <Button
-                            onClick={async () => {
-                              await handleDeletePublication(
-                                publication.publication_id
-                              );
-                              reloadPage();
-                              router.push("/app");
-                              setReload(!reload);
-                            }}
-                            variant="danger"
-                          >
-                            Eliminar publicación
-                          </Button>
-                        </div>
-                      )
-                    }
-                  </div>
-                  <div className="flex items-center mt-4">
-                    <span className="flex text-lg font-semibold">
-                      {publication.title}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-sm text-gray-600 max-w-prose">
-                  {publication.content.split(" ").map((item, index) => {
-                    if (item.startsWith("#")) {
-                      return (
-                        <Link
-                          key={index}
-                          to={`/publication/hashtags?hashtag=${item.slice(1)}`}
-                        >
-                          {" "}
-                          <a className="text-blue-600">{item}</a>
-                        </Link>
-                      );
-                    } else {
-                      return " " + item;
-                    }
-                  })}
-                </span>
-                <div className="relative w-2/4 my-4 overflow-hidden bg-gray-800 rounded-lg aspect-video">
+            <div className="flex flex-col w-full">
+              <div className="flex w-full">
+                <div className="w-12">
                   <Image
-                    src={publication.img_url}
-                    alt={`Imagen de ${publication.title}`}
-                    layout="fill"
-                    objectFit="cover"
+                    className="rounded-full"
+                    src={author?.user?.profileImage}
+                    alt={`Foto de perfil de ${author?.user.name}`}
+                    width={48}
+                    height={48}
                   />
                 </div>
-                <span className="ml-2 text-sm text-gray-600">
-                  {/* Change to long date format */}
-                  {new Date(publication.created_at).getDate()} de{" "}
-                  {new Date(publication.created_at).toLocaleString("es-ES", {
-                    month: "short",
-                  })}{" "}
-                  {new Date(publication.created_at).getFullYear()}
-                </span>
-                <div className="flex items-center mt-4">
-                  <span className="flex mr-2 text-base">Comentarios</span>
-                  <CommentaryIcon className="w-5 h-5 mr-2 fill-slate-600" />
-                  <span>{publication.commentaries?.length}</span>
+                <div className="flex items-center ml-4">
+                  <span className="font-bold">{author?.user?.name}</span>
+                  <span className="ml-1 font-medium text-gray-600 ">
+                    @{author?.user?.email.split("@")[0]}
+                  </span>
+                  <span className="ml-2 text-sm text-gray-600">
+                    {getTimeAge(publication.createdAt)}
+                  </span>
+                </div>
+                {
+                  // If user is the author of the publication, show the delete button
+                  author?.user?.userId ===
+                    JSON.parse(window.localStorage.getItem("user"))?.userId && (
+                    <div className="flex items-center justify-between w-4/6 ml-24">
+                      <div className="flex justify-end">
+                        <Button
+                          onClick={async () => {
+                            await handleDeletePublication(
+                              publication.publication_id
+                            );
+                            reloadPage();
+                            router.push("/app");
+                            setReload(!reload);
+                          }}
+                          variant="danger"
+                        >
+                          Eliminar publicación
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                }
+              </div>
+              <div className="flex flex-col flex-1 ml-3">
+                <div className="flex w-full">
+                  <div className="relative w-2/4 my-4 overflow-hidden bg-gray-800 rounded-lg aspect-video">
+                    <Image
+                      src={publication.image}
+                      alt={`Imagen de ${publication.name}`}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                  <span className="flex flex-col w-1/3 px-6 py-4 mt-4 ml-10 rounded-lg shadow-md bg-emerald-100">
+                    <div className="flex flex-col flex-1 mt-4">
+                      <div className="flex items-center">
+                        <span className="flex text-lg font-semibold">
+                          {publication.name}
+                        </span>
+                      </div>
+                      <div className="flex justify-between w-full mt-2">
+                        <span className="font-semibold text-gray-600 ">
+                          Descripción:
+                        </span>
+                        <span className="ml-8 text-gray-600 max-w-prose">
+                          {publication.productInformation.description}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between mt-2 full">
+                        <span className="text-sm font-semibold text-gray-600">
+                          Marca:
+                        </span>
+                        <span className="text-gray-600 max-w-prose">
+                          {publication.productInformation.brand}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between w-full mt-2">
+                        <span className="font-semibold text-gray-600">
+                          Serie:
+                        </span>
+                        <span className="text-gray-600 max-w-prose">
+                          {publication.productInformation.series}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between w-full mt-2">
+                        <span className="font-semibold text-gray-600">
+                          País:
+                        </span>
+                        <span className="text-gray-600 max-w-prose">
+                          {publication.productInformation.country}
+                        </span>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+                <div>
+                  <span className="ml-2 text-sm text-gray-600">
+                    {/* Change to long date format */}
+                    {new Date(publication.createdAt).getDate()} de{" "}
+                    {new Date(publication.createdAt).toLocaleString("es-ES", {
+                      month: "short",
+                    })}{" "}
+                    {new Date(publication.createdAt).getFullYear()}
+                  </span>
+                  <div className="flex items-center mt-4">
+                    <span className="flex mr-2 text-base">Comentarios</span>
+                    <CommentaryIcon className="w-5 h-5 mr-2 fill-slate-600" />
+                    <span>{publication.commentaries?.length}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -284,13 +308,14 @@ export default function PublicationDetails() {
               </div>
             </form>
             <div>
-              {publication.commentaries?.map((commentary) => {
+              {publication.commentary?.map((commentary) => {
                 const author = commentariesAuthors.find(
-                  (author) => author.user.userId === commentary.author_id
+                  (author) => author?.user?.userId === commentary?.authorId
                 );
+                console.log(author, "ptmr");
                 return (
                   <div
-                    key={commentary.commentary_id}
+                    key={commentary.id}
                     className="flex flex-col w-full px-6 py-4 mt-4"
                   >
                     <div className="flex w-3/5">
@@ -311,7 +336,7 @@ export default function PublicationDetails() {
                             {author?.user?.name}
                           </span>
                           <span className="ml-2 text-sm text-gray-600">
-                            {getTimeAge(publication.created_at)}
+                            {getTimeAge(publication.createdAt)}
                           </span>
                         </div>
                         <span className="text-sm text-gray-600 max-w-prose">
@@ -319,7 +344,7 @@ export default function PublicationDetails() {
                         </span>
                       </div>
                       <div className="flex items-center">
-                        {commentary.author_id === user.userId && (
+                        {commentary.authorId === user.userId && (
                           <Button
                             onClick={async () => {
                               const newFormData = new FormData();
@@ -344,7 +369,7 @@ export default function PublicationDetails() {
                   </div>
                 );
               })}
-              {publication?.commentaries.length === 0 && (
+              {publication?.commentary.length === 0 && (
                 <div className="flex flex-col w-full px-6 py-4 mt-4">
                   <span className="text-sm text-gray-600">
                     No hay comentarios aún

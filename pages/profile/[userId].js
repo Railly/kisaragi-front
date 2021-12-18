@@ -20,6 +20,38 @@ export default function Profile() {
     }
   }, [currentUser, userId]);
 
+  const handleFollow = async (followId) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/follow?followId=${followId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+      }
+    );
+    const data = await res.json();
+    console.log(data, "data");
+    currentUser.refetch();
+  };
+
+  const handleUnfollow = async (unfollowId) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}/users/unfollow?unfollowId=${unfollowId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+      }
+    );
+    const data = await res.json();
+    console.log(data, "data");
+    currentUser.refetch();
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="flex justify-center w-full">
@@ -44,6 +76,9 @@ export default function Profile() {
                 <h2 className="text-xl font-bold">
                   {currentUser?.data?.user?.name}
                 </h2>
+                <p className="mb-4 text-base font-medium">
+                  {currentUser?.data?.user?.description}
+                </p>
                 <p className="text-sm">{currentUser?.data?.user?.email}</p>
                 {/* Format createdAt */}
                 <p className="text-sm">
@@ -57,6 +92,15 @@ export default function Profile() {
                           new Date(currentUser?.data?.user?.createdAt)) /
                           (1000 * 60)
                       )} minutos`
+                    : (new Date() -
+                        new Date(currentUser?.data?.user?.createdAt)) /
+                        (1000 * 60 * 60 * 24) >
+                      1
+                    ? `${Math.round(
+                        (new Date() -
+                          new Date(currentUser?.data?.user?.createdAt)) /
+                          (1000 * 60 * 60 * 24)
+                      )} días`
                     : `${Math.round(
                         (new Date() -
                           new Date(currentUser?.data?.user?.createdAt)) /
@@ -84,9 +128,32 @@ export default function Profile() {
                 Editar perfil
               </Button>
             ) : (
-              <Button variant="tertiary" className="w-4/5 mt-4">
-                Seguir
-              </Button>
+              <>
+                {currentUser?.data?.user?.followers.some(
+                  (follower) =>
+                    follower ===
+                    JSON.parse(localStorage.getItem("user"))?.userId
+                ) ? (
+                  <Button
+                    onClick={() => {
+                      handleUnfollow(currentUser?.data?.user?.userId);
+                    }}
+                    variant="tertiary"
+                    className="w-4/5 mt-4"
+                  >
+                    Siguiendo
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      handleFollow(currentUser?.data?.user?.userId);
+                    }}
+                    className="w-4/5 mt-4"
+                  >
+                    Seguir
+                  </Button>
+                )}
+              </>
             )}
           </section>
         )}

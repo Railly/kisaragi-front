@@ -10,13 +10,20 @@ export default function useDelete(field) {
       const enviromentVariables = {
         users: `${process.env.NEXT_PUBLIC_KISARAGI_USERS_API}`,
         publications: `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}`,
-        commentaries: `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}`,
+        commentariesPub: `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}`,
+        commentariesProd: `${process.env.NEXT_PUBLIC_KISARAGI_PRODUCTS_API}`,
+      };
+      const fieldVariable = {
+        users: "users",
+        publications: "publications",
+        commentariesPub: "commentaries",
+        commentariesProd: "commentaries",
       };
       let newPromise = null;
       if (id) {
         if (formData) {
           newPromise = await fetch(
-            `${enviromentVariables[field]}/${field}/${id}`,
+            `${enviromentVariables[field]}/${fieldVariable[field]}/${id}`,
             {
               method: "DELETE",
               headers: {
@@ -27,7 +34,7 @@ export default function useDelete(field) {
           );
         } else {
           newPromise = await fetch(
-            `${enviromentVariables[field]}/${field}/${id}`,
+            `${enviromentVariables[field]}/${fieldVariable[field]}/${id}`,
             {
               method: "DELETE",
               headers: {
@@ -37,13 +44,16 @@ export default function useDelete(field) {
           );
         }
       } else {
-        newPromise = await fetch(`${enviromentVariables[field]}/${field}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        newPromise = await fetch(
+          `${enviromentVariables[field]}/${fieldVariable[field]}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
       const response = await newPromise.json();
     } catch (error) {

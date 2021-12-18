@@ -5,14 +5,21 @@ import * as yup from "yup";
 import Button from "ui/Button";
 import { useRouter } from "next/router";
 import Link from "ui/Link";
+import { useState } from "react";
 
 const schema = yup.object().shape({
   email: yup.string().email("Email inválido").required("Email es requerido"),
   password: yup.string().required("Contraseña es requerida"),
 });
 
+const errorDictionary = {
+  "User not found": "Usuario no encontrado",
+  "Invalid password": "Contraseña incorrecta",
+};
+
 export default function Home() {
   const router = useRouter();
+  const [error, setError] = useState(null);
 
   const {
     register,
@@ -41,6 +48,8 @@ export default function Home() {
       window.localStorage.setItem("token", JSON.stringify(json.token));
       window.localStorage.setItem("user", JSON.stringify(json.user));
       router.push("/app");
+    } else {
+      setError(json.error);
     }
   };
 
@@ -79,6 +88,11 @@ export default function Home() {
         <div className="pt-4 text-center">
           <Link to="/">Aún no tengo una cuenta 😢</Link>
         </div>
+        {error && (
+          <p className="px-4 py-2 mt-4 text-sm font-semibold text-center text-white bg-rose-500">
+            {errorDictionary[error]}
+          </p>
+        )}
       </form>
     </main>
   );

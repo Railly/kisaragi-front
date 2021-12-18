@@ -9,6 +9,8 @@ import HomeIcon from "ui/Icons/HomeIcon";
 import ProfileIcon from "ui/Icons/ProfileIcon";
 import SellerIcon from "ui/Icons/SellerIcon";
 import PublishModal from "./PublishModal";
+import ProductsIcon from "ui/Icons/ProductsIcon";
+import ProductModal from "./ProductModal";
 
 export default function AppLayout({
   user = {},
@@ -81,6 +83,21 @@ export default function AppLayout({
                 </span>
               </a>
             </Link>
+            <Link href="/products">
+              <a className="flex items-center px-4 py-2 transition rounded-full cursor-pointer hover:bg-slate-200">
+                <ProductsIcon
+                  className="w-8 h-8 mr-2 fill-slate-800"
+                  filled={router.pathname === "/products"}
+                />
+                <span
+                  className={`text-lg ${
+                    router.pathname === "/products" && "font-bold"
+                  }`}
+                >
+                  Productos
+                </span>
+              </a>
+            </Link>
             <Link href="/sellers">
               <a className="flex items-center px-4 py-2 transition rounded-full cursor-pointer hover:bg-slate-200">
                 <SellerIcon
@@ -97,6 +114,7 @@ export default function AppLayout({
               </a>
             </Link>
             <PublishModal />
+            <ProductModal />
           </div>
           <div>
             <Popover className="relative transition">

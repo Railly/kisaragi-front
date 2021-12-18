@@ -154,6 +154,7 @@ export default function Hashtags() {
                       />
                     </div>
                     <div className="flex items-center mt-2">
+                      <span className="flex mr-2 text-base">Comentarios</span>
                       <CommentaryIcon className="w-5 h-5 mr-2 fill-slate-600" />
                       <span>{publication.commentaries?.length}</span>
                     </div>

@@ -8,17 +8,21 @@ import { useForm } from "react-hook-form";
 import Button from "ui/Button";
 import FileInput from "ui/FileInput";
 import CloseIcon from "ui/Icons/CloseIcon";
-import TextAreaInput from "ui/TextAreaInput";
 import TextInput from "ui/TextInput";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  title: yup.string().required("Título es requerido"),
-  content: yup.string().required("Contenido es requerido"),
+  name: yup.string().required("Nombre es requerido"),
+  price: yup.string().required("Precio es requerido"),
+  quantity: yup.string().required("Cantidad es requerido"),
+  brand: yup.string().required("Marca es requerido"),
+  series: yup.string().required("Serie es requerido"),
+  description: yup.string().required("Descripción es requerido"),
+  country: yup.string().required("País es requerido"),
   file: yup.mixed(),
 });
 
-export default function PublishModal() {
+export default function ProductModal() {
   const {
     watch,
     register,
@@ -44,14 +48,19 @@ export default function PublishModal() {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("content", data.content);
+    formData.append("name", data.name);
+    formData.append("price", data.price);
+    formData.append("quantity", data.quantity);
+    formData.append("brand", data.brand);
+    formData.append("series", data.series);
+    formData.append("description", data.description);
+    formData.append("country", data.country);
     if (data.file?.[0]) {
       formData.append("file", data.file[0]);
     }
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}/publications`,
+      `${process.env.NEXT_PUBLIC_KISARAGI_PRODUCTS_API}/products`,
       {
         method: "POST",
         body: formData,
@@ -66,7 +75,7 @@ export default function PublishModal() {
     reloadPage();
     closeModal();
     console.log(json);
-    router.push("/app");
+    router.push("/products");
   };
 
   return (
@@ -74,10 +83,10 @@ export default function PublishModal() {
       <Button
         type="button"
         onClick={openModal}
-        variant="secondary"
+        variant="tertiary"
         className="rounded-full"
       >
-        Nuevo Post
+        Nuevo producto
       </Button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -128,30 +137,61 @@ export default function PublishModal() {
                   as="h3"
                   className="text-lg font-medium leading-6 text-center text-gray-900"
                 >
-                  Nuevo Post
+                  Comparte tu coleccionable
                 </Dialog.Title>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="grid mt-2 gap-y-4"
                 >
                   <TextInput
-                    label="Título"
-                    name="title"
+                    label="Nombre"
+                    name="name"
                     register={register}
-                    errors={errors.title}
+                    errors={errors.name}
                   />
-                  <TextAreaInput
-                    label="Contenido"
-                    name="content"
+                  <TextInput
+                    label="Descripción"
+                    name="description"
                     register={register}
-                    errors={errors.content}
+                    errors={errors.description}
+                  />
+                  <TextInput
+                    label="Precio (S/.)"
+                    name="price"
+                    register={register}
+                    errors={errors.price}
+                  />
+                  <TextInput
+                    label="Cantidad"
+                    name="quantity"
+                    register={register}
+                    errors={errors.quantity}
+                  />
+                  <TextInput
+                    label="Marca"
+                    name="brand"
+                    register={register}
+                    errors={errors.brand}
+                  />
+                  <TextInput
+                    label="Serie"
+                    name="series"
+                    register={register}
+                    errors={errors.series}
+                  />
+                  <TextInput
+                    label="País"
+                    name="country"
+                    register={register}
+                    errors={errors.country}
                   />
                   <FileInput
                     label="Imagen"
-                    name="image"
+                    name="file"
                     errors={errors.file}
                     {...register("file")}
                   />
+
                   {file?.[0] && (
                     <div className="grid grid-cols-1 gap-y-2">
                       <Image

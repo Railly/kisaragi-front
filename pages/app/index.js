@@ -4,11 +4,12 @@ import NextLink from "next/link";
 import Link from "ui/Link";
 import { useState } from "react";
 import CommentaryIcon from "ui/Icons/CommentaryIcon";
+import { useReload } from "context/reloadContext";
 
 export default function MainApp() {
   const [publications, setPublications] = useState(null);
   const [authors, setAuthors] = useState(null);
-  const [reload, setReload] = useState(false);
+  const { reload } = useReload();
 
   useEffect(() => {
     const fetchPublications = async () => {
@@ -23,7 +24,7 @@ export default function MainApp() {
           }
         );
         const data = await responsePublications.json();
-        setPublications(data);
+        setPublications(data.reverse());
         const authorsIdArray = data
           .map((publication) => publication.author_id)
           .reduce((acc, authorId) => {
@@ -133,12 +134,20 @@ export default function MainApp() {
                     />
                   </div>
                   <div className="flex flex-col flex-1 ml-3">
-                    <div className="flex items-center">
-                      <span className="flex text-lg font-semibold">
-                        {publication.title}
+                    <div className="flex items-center mt-3">
+                      <span className="font-bold">
+                        {currentAuthor?.user?.name}
+                      </span>
+                      <span className="ml-1 font-medium text-gray-600 ">
+                        @{currentAuthor?.user?.email.split("@")[0]}
                       </span>
                       <span className="ml-2 text-sm text-gray-600">
                         {getTimeAge(publication.created_at)}
+                      </span>
+                    </div>
+                    <div className="flex items-center mt-4">
+                      <span className="flex text-lg font-semibold">
+                        {publication.title}
                       </span>
                     </div>
                     <span className="text-sm text-gray-600 max-w-prose">
@@ -169,6 +178,7 @@ export default function MainApp() {
                       />
                     </div>
                     <div className="flex items-center mt-2">
+                      <span className="flex mr-2 text-base">Comentarios</span>
                       <CommentaryIcon className="w-5 h-5 mr-2 fill-slate-600" />
                       <span>{publication.commentaries?.length}</span>
                     </div>
