@@ -32,7 +32,7 @@ export default function PublicationDetails() {
   const [author, setAuthor] = useState(null);
   const [commentariesAuthors, setCommentariesAuthors] = useState(null);
   const handleDeleteCommentary = useDelete("commentariesProd");
-  const handleDeletePublication = useDelete("publications");
+  const handleDeletePublication = useDelete("products");
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
@@ -197,11 +197,9 @@ export default function PublicationDetails() {
                       <div className="flex justify-end">
                         <Button
                           onClick={async () => {
-                            await handleDeletePublication(
-                              publication.publication_id
-                            );
+                            await handleDeletePublication(publication.id);
                             reloadPage();
-                            router.push("/app");
+                            router.push("/products");
                             setReload(!reload);
                           }}
                           variant="danger"
@@ -353,7 +351,7 @@ export default function PublicationDetails() {
                                 publication.publication_id
                               );
                               await handleDeleteCommentary(
-                                commentary.commentary_id,
+                                commentary.id,
                                 newFormData
                               );
                               setReload(!reload);

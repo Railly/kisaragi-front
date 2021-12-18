@@ -12,12 +12,14 @@ export default function useDelete(field) {
         publications: `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}`,
         commentariesPub: `${process.env.NEXT_PUBLIC_KISARAGI_PUBLICATIONS_API}`,
         commentariesProd: `${process.env.NEXT_PUBLIC_KISARAGI_PRODUCTS_API}`,
+        products: `${process.env.NEXT_PUBLIC_KISARAGI_PRODUCTS_API}`,
       };
       const fieldVariable = {
         users: "users",
         publications: "publications",
         commentariesPub: "commentaries",
         commentariesProd: "commentaries",
+        products: "products",
       };
       let newPromise = null;
       if (id) {
